@@ -12,7 +12,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 
 /**
@@ -40,13 +39,13 @@ public class ZookeeperDiscoveryClientConfiguration {
 	}
 
 	@Bean
-	public ServiceInstance<ZookeeperInstance> serviceInstance() throws Exception {
+	public ServiceInstance<ZookeeperInstance> serviceInstance(MicroserviceAddressProvider microserviceAddressProvider) throws Exception {
 		Environment environment = context.getEnvironment();
-		Integer port = new Integer(environment.getProperty("server.port", "8080"));
 		UriSpec uriSpec = new UriSpec(zookeeperDiscoveryProperties().getUriSpec());
 		return ServiceInstance.<ZookeeperInstance> builder()
 				.name(environment.getProperty("spring.application.name"))
-				.payload(new ZookeeperInstance(context.getId())).port(port)
+				.payload(new ZookeeperInstance(context.getId())).port(microserviceAddressProvider.getPort())
+				.address(microserviceAddressProvider.getHost())
 				.uriSpec(uriSpec).build();
 	}
 
@@ -56,15 +55,21 @@ public class ZookeeperDiscoveryClientConfiguration {
 	}
 
 	@Bean
-	public ServiceDiscovery<ZookeeperInstance> serviceDiscovery(CuratorFramework curator)
+	public ServiceDiscovery<ZookeeperInstance> serviceDiscovery(CuratorFramework curator, ServiceInstance<ZookeeperInstance> serviceInstance)
 			throws Exception {
 		return ServiceDiscoveryBuilder.builder(ZookeeperInstance.class).client(curator)
-				.basePath(zookeeperDiscoveryProperties().getRoot())
-				.serializer(instanceSerializer()).thisInstance(serviceInstance()).build();
+				.basePath(getServiceBasePath())
+				.serializer(instanceSerializer()).thisInstance(serviceInstance).build();
+	}
+
+	private String getServiceBasePath() {
+		String realm = zookeeperDiscoveryProperties().getRealm();
+		return realm != null ? zookeeperDiscoveryProperties().getRoot() + "/" + realm : zookeeperDiscoveryProperties().getRoot();
 	}
 
 	@Bean
 	public ZookeeperDiscoveryHealthIndicator zookeeperDiscoveryHealthIndicator() {
 		return new ZookeeperDiscoveryHealthIndicator();
 	}
+
 }
