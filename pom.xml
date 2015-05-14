@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>org.springframework.cloud</groupId>
 		<artifactId>spring-cloud-build</artifactId>
-		<version>1.0.2.BUILD-SNAPSHOT</version>
+		<version>1.0.1.BUILD-SNAPSHOT</version>
 		<relativePath/>
 		<!-- lookup parent from repository -->
 	</parent>
@@ -165,10 +165,10 @@
 	</dependencyManagement>
 
 	<properties>
-		<spring.cloud.commons>1.0.1.RELEASE</spring.cloud.commons>
-		<spring.cloud.bus>1.0.1.RELEASE</spring.cloud.bus>
-		<spring.cloud.config.client>1.0.1.RELEASE</spring.cloud.config.client>
-		<spring.cloud.netflix.core>1.0.1.RELEASE</spring.cloud.netflix.core>
+		<spring.cloud.commons>1.0.1.BUILD-SNAPSHOT</spring.cloud.commons>
+		<spring.cloud.bus>1.0.1.BUILD-SNAPSHOT</spring.cloud.bus>
+		<spring.cloud.config.client>1.0.1.BUILD-SNAPSHOT</spring.cloud.config.client>
+		<spring.cloud.netflix.core>1.0.1.BUILD-SNAPSHOT</spring.cloud.netflix.core>
 		<curator.version>2.7.0</curator.version>
 		<ribbon.version>2.0-RC9</ribbon.version>
 	</properties>
