@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DefaultDependencyWatcher implements DependencyWatcher {
+public class DefaultDependencyWatcher implements DependencyStateChangeListener, DependencyRegistrationHookProvider {
 
     private final ServiceDiscovery serviceDiscovery;
     private final Map<String, ServiceCache> dependencyRegistry = new HashMap<>();
