@@ -1,6 +1,5 @@
 package org.springframework.cloud.zookeeper.discovery;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +7,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
+import java.io.IOException;
+import java.net.Inet4Address;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.net.NetworkInterface;
+import java.util.Enumeration;
 
 import static java.lang.invoke.MethodHandles.lookup;
 
@@ -34,12 +36,41 @@ public class AddressProviderConfiguration {
     }
 
     public static String resolveMicroserviceLocalhost() {
+        return getIpAddress();
+    }
+
+    /**
+     * Return a non loopback IPv4 address for the machine running this process.
+     * If the machine has multiple network interfaces, the IP address for the
+     * first interface returned by {@link java.net.NetworkInterface#getNetworkInterfaces}
+     * is returned.
+     *
+     * @return non loopback IPv4 address for the machine running this process
+     *
+     * @see java.net.NetworkInterface#getNetworkInterfaces
+     * @see java.net.NetworkInterface#getInetAddresses
+     */
+    public static String getIpAddress() {
         try {
-            return InetAddress.getLocalHost().getHostAddress();
-        } catch (UnknownHostException e) {
-            log.error("Exception occurred while trying to retrieve localhost", e);
-            return StringUtils.EMPTY;
+            for(Enumeration<NetworkInterface> enumNic = NetworkInterface.getNetworkInterfaces();
+                enumNic.hasMoreElements();) {
+                NetworkInterface ifc = enumNic.nextElement();
+                if (ifc.isUp()) {
+                    for (Enumeration<InetAddress> enumAddr = ifc.getInetAddresses();
+                         enumAddr.hasMoreElements(); ) {
+                        InetAddress address = enumAddr.nextElement();
+                        if (address instanceof Inet4Address && !address.isLoopbackAddress()) {
+                            return address.getHostAddress();
+                        }
+                    }
+                }
+            }
         }
+        catch (IOException e) {
+            // ignore
+        }
+
+        return "unknown";
     }
 
 }
