@@ -24,7 +24,7 @@ public class DependencyWatcherAutoConfiguration {
 
     @Bean(initMethod = "registerDependencies", destroyMethod = "unregisterDependencies")
     @ConditionalOnMissingBean
-    public DependencyWatcher dependencyWatcher(ServiceDiscovery serviceDiscovery,
+    public DependencyStateChangeListener dependencyWatcher(ServiceDiscovery serviceDiscovery,
                                         DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier,
                                         ZookeeperDiscoveryClient zookeeperDiscoveryClient) {
         return new DefaultDependencyWatcher(serviceDiscovery, dependencyPresenceOnStartupVerifier, zookeeperDiscoveryClient);
