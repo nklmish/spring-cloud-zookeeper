@@ -6,25 +6,26 @@ import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryClient;
 import org.springframework.cloud.zookeeper.discovery.watcher.presence.DependencyPresenceOnStartupVerifier;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DefaultDependencyWatcher implements DependencyStateChangeListener, DependencyRegistrationHookProvider {
+public class DefaultDependencyWatcher implements DependencyRegistrationHookProvider {
 
     private final ServiceDiscovery serviceDiscovery;
     private final Map<String, ServiceCache> dependencyRegistry = new HashMap<>();
-    private final List<DependencyWatcherListener> listeners = new ArrayList<>();
+    private final List<DependencyWatcherListener> listeners;
     private final DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier;
     private final ZookeeperDiscoveryClient zookeeperDiscoveryClient;
 
     public DefaultDependencyWatcher(ServiceDiscovery serviceDiscovery,
                                     DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier,
-                                    ZookeeperDiscoveryClient zookeeperDiscoveryClient) {
+                                    ZookeeperDiscoveryClient zookeeperDiscoveryClient,
+                                    List<DependencyWatcherListener> dependencyWatcherListeners) {
         this.serviceDiscovery = serviceDiscovery;
         this.dependencyPresenceOnStartupVerifier = dependencyPresenceOnStartupVerifier;
         this.zookeeperDiscoveryClient = zookeeperDiscoveryClient;
+        this.listeners = dependencyWatcherListeners;
     }
 
     @Override
@@ -54,16 +55,6 @@ public class DefaultDependencyWatcher implements DependencyStateChangeListener, 
         for (ServiceCache cache : dependencyRegistry.values()) {
             cache.close();
         }
-    }
-
-    @Override
-    public void registerDependencyStateChangeListener(DependencyWatcherListener listener) {
-        listeners.add(listener);
-    }
-
-    @Override
-    public void clearDependencyStateChangeListener(DependencyWatcherListener listener) {
-        listeners.remove(listener);
     }
 
 }
