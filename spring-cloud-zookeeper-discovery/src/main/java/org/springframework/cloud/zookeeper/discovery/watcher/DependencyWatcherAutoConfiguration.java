@@ -22,7 +22,7 @@ public class DependencyWatcherAutoConfiguration {
         return new DefaultDependencyPresenceOnStartupVerifier();
     }
 
-    @Bean(initMethod = "registerDependencies", destroyMethod = "unregisterDependencies")
+    @Bean(initMethod = "registerDependencyRegistrationHooks", destroyMethod = "clearDependencyRegistrationHooks")
     @ConditionalOnMissingBean
     public DependencyStateChangeListener dependencyWatcher(ServiceDiscovery serviceDiscovery,
                                         DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier,
