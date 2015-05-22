@@ -3,7 +3,6 @@ package org.springframework.cloud.zookeeper.discovery.watcher.presence;
 import org.apache.curator.x.discovery.ServiceInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cloud.zookeeper.discovery.watcher.presence.PresenceChecker;
 
 import java.lang.invoke.MethodHandles;
 import java.util.List;
@@ -17,7 +16,6 @@ public class LogMissingDependencyChecker implements PresenceChecker {
         if (serviceInstances.isEmpty()) {
             log.warn("Microservice dependency with name [" + dependencyName + "] is missing.");
         }
-
     }
 
 }

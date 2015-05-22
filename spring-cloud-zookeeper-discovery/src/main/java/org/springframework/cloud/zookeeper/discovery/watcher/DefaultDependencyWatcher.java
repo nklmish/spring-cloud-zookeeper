@@ -2,7 +2,8 @@ package org.springframework.cloud.zookeeper.discovery.watcher;
 
 import org.apache.curator.x.discovery.ServiceCache;
 import org.apache.curator.x.discovery.ServiceDiscovery;
-import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryClient;
+import org.springframework.cloud.zookeeper.discovery.watcher.dependency.ZookeeperDependencies;
+import org.springframework.cloud.zookeeper.discovery.watcher.dependency.ZookeeperDependencies.ZookeeperDependency;
 import org.springframework.cloud.zookeeper.discovery.watcher.presence.DependencyPresenceOnStartupVerifier;
 
 import java.io.IOException;
@@ -16,37 +17,27 @@ public class DefaultDependencyWatcher implements DependencyRegistrationHookProvi
     private final Map<String, ServiceCache> dependencyRegistry = new HashMap<>();
     private final List<DependencyWatcherListener> listeners;
     private final DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier;
-    private final ZookeeperDiscoveryClient zookeeperDiscoveryClient;
+    private final ZookeeperDependencies zookeeperDependencies;
 
     public DefaultDependencyWatcher(ServiceDiscovery serviceDiscovery,
                                     DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier,
-                                    ZookeeperDiscoveryClient zookeeperDiscoveryClient,
-                                    List<DependencyWatcherListener> dependencyWatcherListeners) {
+                                    List<DependencyWatcherListener> dependencyWatcherListeners, ZookeeperDependencies zookeeperDependencies) {
         this.serviceDiscovery = serviceDiscovery;
         this.dependencyPresenceOnStartupVerifier = dependencyPresenceOnStartupVerifier;
-        this.zookeeperDiscoveryClient = zookeeperDiscoveryClient;
         this.listeners = dependencyWatcherListeners;
+        this.zookeeperDependencies = zookeeperDependencies;
     }
 
     @Override
     public void registerDependencyRegistrationHooks() throws Exception {
-        for (String dependencyPath : getListOfServiceDependencies(zookeeperDiscoveryClient)) {
+        for (ZookeeperDependency zookeeperDependency : zookeeperDependencies.getDependencyConfigurations()) {
+            String dependencyPath = zookeeperDependency.getPath();
             ServiceCache serviceCache = serviceDiscovery.serviceCacheBuilder().name(dependencyPath).build();
             serviceCache.start();
-            dependencyPresenceOnStartupVerifier.verifyDependencyPresence(dependencyPath, serviceCache, retrieveFromMetadataIfServiceIsRequired(dependencyPath));
+            dependencyPresenceOnStartupVerifier.verifyDependencyPresence(dependencyPath, serviceCache, zookeeperDependency.isRequired());
             dependencyRegistry.put(dependencyPath, serviceCache);
             serviceCache.addListener(new DependencyStateChangeListenerRegistry(listeners, dependencyPath, serviceCache));
         }
-    }
-
-    private List<String> getListOfServiceDependencies(ZookeeperDiscoveryClient zookeeperDiscoveryClient) {
-        // TODO: Think of how to solve this
-        return zookeeperDiscoveryClient.getServices();
-    }
-
-    private boolean retrieveFromMetadataIfServiceIsRequired(String dependencyPath) {
-        // TODO: Think of how to solve this
-        return false;
     }
 
     @Override
