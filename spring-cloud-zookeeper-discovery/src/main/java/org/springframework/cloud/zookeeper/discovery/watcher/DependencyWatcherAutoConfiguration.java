@@ -24,7 +24,7 @@ import java.util.List;
  */
 @Configuration
 @EnableConfigurationProperties
-@ConditionalOnProperty("dependencies")
+@ConditionalOnProperty("zookeeper.dependencies")
 @AutoConfigureAfter(ZookeeperDiscoveryClientConfiguration.class)
 public class DependencyWatcherAutoConfiguration {
 

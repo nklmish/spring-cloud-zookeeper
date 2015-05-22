@@ -12,7 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Data
-@ConfigurationProperties("dependencies")
+@ConfigurationProperties("zookeeper.dependencies")
 public class ZookeeperDependencies {
 
     private String prefix = "";
