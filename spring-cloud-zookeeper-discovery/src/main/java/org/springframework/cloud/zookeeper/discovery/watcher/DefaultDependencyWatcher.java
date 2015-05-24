@@ -21,7 +21,8 @@ public class DefaultDependencyWatcher implements DependencyRegistrationHookProvi
 
     public DefaultDependencyWatcher(ServiceDiscovery serviceDiscovery,
                                     DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier,
-                                    List<DependencyWatcherListener> dependencyWatcherListeners, ZookeeperDependencies zookeeperDependencies) {
+                                    List<DependencyWatcherListener> dependencyWatcherListeners,
+                                    ZookeeperDependencies zookeeperDependencies) {
         this.serviceDiscovery = serviceDiscovery;
         this.dependencyPresenceOnStartupVerifier = dependencyPresenceOnStartupVerifier;
         this.listeners = dependencyWatcherListeners;
@@ -42,7 +43,6 @@ public class DefaultDependencyWatcher implements DependencyRegistrationHookProvi
 
     @Override
     public void clearDependencyRegistrationHooks() throws IOException {
-        listeners.clear();
         for (ServiceCache cache : dependencyRegistry.values()) {
             cache.close();
         }

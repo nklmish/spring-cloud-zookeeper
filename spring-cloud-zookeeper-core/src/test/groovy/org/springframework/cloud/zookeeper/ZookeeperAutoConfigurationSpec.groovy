@@ -11,7 +11,7 @@ import spock.lang.Specification
  * @author Spencer Gibb
  */
 @ContextConfiguration(classes = [ TestConfig, ZookeeperAutoConfiguration ])
-class ZookeeperAutoConfigurationTest extends Specification {
+class ZookeeperAutoConfigurationSpec extends Specification {
 
 	@Autowired(required = false)
 	CuratorFramework curator

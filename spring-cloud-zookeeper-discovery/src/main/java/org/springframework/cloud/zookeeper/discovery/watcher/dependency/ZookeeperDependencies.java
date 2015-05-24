@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
@@ -11,8 +12,9 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@Component
 @Data
-@ConfigurationProperties("zookeeper.dependencies")
+@ConfigurationProperties("zookeeper")
 public class ZookeeperDependencies {
 
     private String prefix = "";
@@ -53,4 +55,7 @@ public class ZookeeperDependencies {
         return dependencies.values();
     }
 
+    public boolean hasDependencies() {
+        return !dependencies.isEmpty();
+    }
 }
