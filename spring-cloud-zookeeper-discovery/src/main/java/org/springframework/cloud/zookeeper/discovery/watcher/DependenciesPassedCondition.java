@@ -10,14 +10,14 @@ import java.util.Map;
 
 class DependenciesPassedCondition extends SpringBootCondition {
 
-    private static final String ZOOKEEPER_DEPENDENCIES_PROP = "zookeeper.dependencies";
+	private static final String ZOOKEEPER_DEPENDENCIES_PROP = "zookeeper.dependencies";
 
-    @Override
-    public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
-        Map<String, Object> subProperties = new RelaxedPropertyResolver(context.getEnvironment()).getSubProperties(ZOOKEEPER_DEPENDENCIES_PROP);
-        return subProperties.isEmpty() ?
-                ConditionOutcome.noMatch("No dependencies have been passed for the service") :
-                ConditionOutcome.match();
-    }
+	@Override
+	public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
+		Map<String, Object> subProperties = new RelaxedPropertyResolver(context.getEnvironment()).getSubProperties(ZOOKEEPER_DEPENDENCIES_PROP);
+		return subProperties.isEmpty() ?
+				ConditionOutcome.noMatch("No dependencies have been passed for the service") :
+				ConditionOutcome.match();
+	}
 
 }

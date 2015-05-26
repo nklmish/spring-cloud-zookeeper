@@ -28,23 +28,23 @@ import java.util.List;
 @AutoConfigureAfter(ZookeeperDiscoveryClientConfiguration.class)
 public class DependencyWatcherAutoConfiguration {
 
-    @Autowired(required = false)
-    private List<DependencyWatcherListener> dependencyWatcherListeners = new ArrayList<>();
+	@Autowired(required = false)
+	private List<DependencyWatcherListener> dependencyWatcherListeners = new ArrayList<>();
 
-    @Bean
-    @ConditionalOnMissingBean
-    public DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier() {
-        return new DefaultDependencyPresenceOnStartupVerifier();
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	public DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier() {
+		return new DefaultDependencyPresenceOnStartupVerifier();
+	}
 
-    @Bean(initMethod = "registerDependencyRegistrationHooks", destroyMethod = "clearDependencyRegistrationHooks")
-    @ConditionalOnMissingBean
-    public DependencyRegistrationHookProvider dependencyWatcher(ServiceDiscovery serviceDiscovery,
-                                        DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier,
-                                        ZookeeperDependencies zookeeperDependencies) {
-        return new DefaultDependencyWatcher(serviceDiscovery,
-                dependencyPresenceOnStartupVerifier,
-                dependencyWatcherListeners,
-                zookeeperDependencies);
-    }
+	@Bean(initMethod = "registerDependencyRegistrationHooks", destroyMethod = "clearDependencyRegistrationHooks")
+	@ConditionalOnMissingBean
+	public DependencyRegistrationHookProvider dependencyWatcher(ServiceDiscovery serviceDiscovery,
+																DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier,
+																ZookeeperDependencies zookeeperDependencies) {
+		return new DefaultDependencyWatcher(serviceDiscovery,
+				dependencyPresenceOnStartupVerifier,
+				dependencyWatcherListeners,
+				zookeeperDependencies);
+	}
 }

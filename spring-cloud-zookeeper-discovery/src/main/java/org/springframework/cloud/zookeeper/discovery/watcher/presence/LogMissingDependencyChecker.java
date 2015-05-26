@@ -9,13 +9,13 @@ import java.util.List;
 
 public class LogMissingDependencyChecker implements PresenceChecker {
 
-    private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+	private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    @Override
-    public void checkPresence(String dependencyName, List<ServiceInstance> serviceInstances) {
-        if (serviceInstances.isEmpty()) {
-            log.warn("Microservice dependency with name [" + dependencyName + "] is missing.");
-        }
-    }
+	@Override
+	public void checkPresence(String dependencyName, List<ServiceInstance> serviceInstances) {
+		if (serviceInstances.isEmpty()) {
+			log.warn("Microservice dependency with name [" + dependencyName + "] is missing.");
+		}
+	}
 
 }

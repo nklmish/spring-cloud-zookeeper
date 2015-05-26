@@ -23,54 +23,52 @@ import static java.lang.invoke.MethodHandles.lookup;
 @Configuration
 public class AddressProviderConfiguration {
 
-    private static final Logger log = LoggerFactory.getLogger(lookup().lookupClass());
+	private static final Logger log = LoggerFactory.getLogger(lookup().lookupClass());
 
-    @Autowired
-    private Environment environment;
+	@Autowired
+	private Environment environment;
 
-    @Bean
-    MicroserviceAddressProvider microserviceAddressProvider() {
-        String microserviceHost = environment.getProperty("microservice.host", resolveMicroserviceLocalhost());
-        Integer microservicePort = Integer.valueOf(environment.getProperty("server.port", "8080"));
-        return new MicroserviceAddressProvider(microserviceHost, microservicePort);
-    }
+	@Bean
+	MicroserviceAddressProvider microserviceAddressProvider() {
+		String microserviceHost = environment.getProperty("microservice.host", resolveMicroserviceLocalhost());
+		Integer microservicePort = Integer.valueOf(environment.getProperty("server.port", "8080"));
+		return new MicroserviceAddressProvider(microserviceHost, microservicePort);
+	}
 
-    public static String resolveMicroserviceLocalhost() {
-        return getIpAddress();
-    }
+	public static String resolveMicroserviceLocalhost() {
+		return getIpAddress();
+	}
 
-    /**
-     * Return a non loopback IPv4 address for the machine running this process.
-     * If the machine has multiple network interfaces, the IP address for the
-     * first interface returned by {@link java.net.NetworkInterface#getNetworkInterfaces}
-     * is returned.
-     *
-     * @return non loopback IPv4 address for the machine running this process
-     *
-     * @see java.net.NetworkInterface#getNetworkInterfaces
-     * @see java.net.NetworkInterface#getInetAddresses
-     */
-    public static String getIpAddress() {
-        try {
-            for(Enumeration<NetworkInterface> enumNic = NetworkInterface.getNetworkInterfaces();
-                enumNic.hasMoreElements();) {
-                NetworkInterface ifc = enumNic.nextElement();
-                if (ifc.isUp()) {
-                    for (Enumeration<InetAddress> enumAddr = ifc.getInetAddresses();
-                         enumAddr.hasMoreElements(); ) {
-                        InetAddress address = enumAddr.nextElement();
-                        if (address instanceof Inet4Address && !address.isLoopbackAddress()) {
-                            return address.getHostAddress();
-                        }
-                    }
-                }
-            }
-        }
-        catch (IOException e) {
-            // ignore
-        }
+	/**
+	 * Return a non loopback IPv4 address for the machine running this process.
+	 * If the machine has multiple network interfaces, the IP address for the
+	 * first interface returned by {@link java.net.NetworkInterface#getNetworkInterfaces}
+	 * is returned.
+	 *
+	 * @return non loopback IPv4 address for the machine running this process
+	 * @see java.net.NetworkInterface#getNetworkInterfaces
+	 * @see java.net.NetworkInterface#getInetAddresses
+	 */
+	public static String getIpAddress() {
+		try {
+			for (Enumeration<NetworkInterface> enumNic = NetworkInterface.getNetworkInterfaces();
+				 enumNic.hasMoreElements(); ) {
+				NetworkInterface ifc = enumNic.nextElement();
+				if (ifc.isUp()) {
+					for (Enumeration<InetAddress> enumAddr = ifc.getInetAddresses();
+						 enumAddr.hasMoreElements(); ) {
+						InetAddress address = enumAddr.nextElement();
+						if (address instanceof Inet4Address && !address.isLoopbackAddress()) {
+							return address.getHostAddress();
+						}
+					}
+				}
+			}
+		} catch (IOException e) {
+			// ignore
+		}
 
-        return "unknown";
-    }
+		return "unknown";
+	}
 
 }

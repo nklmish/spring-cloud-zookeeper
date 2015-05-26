@@ -6,11 +6,11 @@ import java.util.List;
 
 public interface PresenceChecker {
 
-    /**
-     * Checks if a given dependency is present
-     *
-     * @param dependencyName
-     * @param serviceInstances - instances to check the dependency for
-     */
-    void checkPresence(String dependencyName, List<ServiceInstance> serviceInstances);
+	/**
+	 * Checks if a given dependency is present
+	 *
+	 * @param dependencyName
+	 * @param serviceInstances - instances to check the dependency for
+	 */
+	void checkPresence(String dependencyName, List<ServiceInstance> serviceInstances);
 }
