@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.test.SpringApplicationContextLoader
-import org.springframework.cloud.zookeeper.discovery.base.AvailablePortScanner
 import org.springframework.cloud.zookeeper.discovery.watcher.presence.DependencyPresenceOnStartupVerifier
 import org.springframework.cloud.zookeeper.discovery.watcher.presence.LogMissingDependencyChecker
 import org.springframework.context.annotation.Bean
@@ -19,6 +18,7 @@ import org.springframework.context.annotation.Import
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
+import org.springframework.util.SocketUtils
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
 
@@ -63,7 +63,7 @@ class DefaultDependencyWatcherSpringISpec extends Specification {
 
 		@Bean(destroyMethod = 'close')
 		TestingServer testingServer() {
-			return new TestingServer(AvailablePortScanner.getNextFreePort())
+			return new TestingServer(SocketUtils.findAvailableTcpPort())
 		}
 
 		@Bean
