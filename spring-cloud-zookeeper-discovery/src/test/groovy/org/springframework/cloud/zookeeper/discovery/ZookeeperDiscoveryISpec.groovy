@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.boot.test.WebIntegrationTest
+import org.springframework.cloud.client.ServiceInstance
+import org.springframework.cloud.client.discovery.DiscoveryClient
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient
 import org.springframework.cloud.client.loadbalancer.LoadBalanced
 import org.springframework.context.annotation.Bean
@@ -16,13 +18,18 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.web.client.RestTemplate
 import spock.lang.Specification
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*
+
 @ContextConfiguration(classes = Config, loader = SpringApplicationContextLoader)
 @ActiveProfiles('ribbon')
 @WebIntegrationTest
-class ZookeeperRibbonISpec extends Specification {
+class ZookeeperDiscoveryISpec extends Specification {
+
+	public static final String TEST_INSTANCE_NAME = 'testInstance'
 
 	@Autowired TestRibbonClient testRibbonClient
 	@Autowired WireMockServer wiremockServer
+	@Autowired DiscoveryClient discoveryClient
 	WireMock wireMock
 
 	def setup() {
@@ -32,12 +39,20 @@ class ZookeeperRibbonISpec extends Specification {
 
 	def 'should find a collaborator via Ribbon'() {
 		expect:
-		'pong' == testRibbonClient.ping()
+			'pong' == testRibbonClient.pingService(TEST_INSTANCE_NAME)
 	}
 
 	def 'should find the app by its name via Ribbon'() {
 		expect:
-		'{"status":"UP"}' == testRibbonClient.thisHealthCheck()
+			'{"status":"UP"}' == testRibbonClient.thisHealthCheck()
+	}
+
+	def 'should find a collaborator via discovery client'() {
+		given:
+			List<ServiceInstance> instances = discoveryClient.getInstances(TEST_INSTANCE_NAME)
+			ServiceInstance instance = instances.first()
+		expect:
+			'pong' == testRibbonClient.pingOnUrl("${instance.host}:${instance.port}")
 	}
 
 	@Configuration
@@ -54,18 +69,13 @@ class ZookeeperRibbonISpec extends Specification {
 
 	}
 
-	static class TestRibbonClient {
+	static class TestRibbonClient extends TestServiceRestClient {
 
-		private final RestTemplate restTemplate;
 		private final String thisAppName
 
 		TestRibbonClient(RestTemplate restTemplate, String thisAppName) {
-			this.restTemplate = restTemplate
+			super(restTemplate)
 			this.thisAppName = thisAppName
-		}
-
-		String ping() {
-			return restTemplate.getForObject('http://testInstance/ping', String)
 		}
 
 		String thisHealthCheck() {
@@ -74,5 +84,3 @@ class ZookeeperRibbonISpec extends Specification {
 
 	}
 }
-
-import static com.github.tomakehurst.wiremock.client.WireMock.*

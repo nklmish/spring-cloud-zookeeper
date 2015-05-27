@@ -4,6 +4,8 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.cloud.client.ServiceInstance
+import org.springframework.cloud.client.discovery.DiscoveryClient
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient
 import org.springframework.cloud.client.loadbalancer.LoadBalanced
 import org.springframework.context.annotation.Bean
@@ -18,10 +20,11 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*
 
 @ContextConfiguration(classes = Config, loader = SpringApplicationContextLoader)
 @ActiveProfiles('watcher')
-class ZookeeperRibbonWithDependenciesISpec extends Specification {
+class ZookeeperDiscoveryWithDependenciesISpec extends Specification {
 
 	@Autowired TestRibbonClient testRibbonClient
 	@Autowired WireMockServer wiremockServer
+	@Autowired DiscoveryClient discoveryClient
 	WireMock wireMock
 
 	def setup() {
@@ -31,7 +34,15 @@ class ZookeeperRibbonWithDependenciesISpec extends Specification {
 
 	def 'should find a collaborator via Ribbon by using its alias from dependencies'() {
 		expect:
-			'pong' == testRibbonClient.ping()
+			'pong' == testRibbonClient.pingService('someAlias')
+	}
+
+	def 'should find a collaborator via discovery client'() {
+		given:
+			List<ServiceInstance> instances = discoveryClient.getInstances('someAlias')
+			ServiceInstance instance = instances.first()
+		expect:
+			'pong' == testRibbonClient.pingOnUrl("${instance.host}:${instance.port}")
 	}
 
 	@Configuration
@@ -47,17 +58,10 @@ class ZookeeperRibbonWithDependenciesISpec extends Specification {
 
 	}
 
-	static class TestRibbonClient {
-
-		private final RestTemplate restTemplate;
+	static class TestRibbonClient extends TestServiceRestClient {
 
 		TestRibbonClient(RestTemplate restTemplate) {
-			this.restTemplate = restTemplate
+			super(restTemplate)
 		}
-
-		String ping() {
-			return restTemplate.getForObject('http://someAlias/ping', String)
-		}
-
 	}
 }
