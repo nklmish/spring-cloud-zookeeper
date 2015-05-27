@@ -2,8 +2,6 @@ package org.springframework.cloud.zookeeper.discovery
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import org.apache.curator.framework.CuratorFramework
-import org.apache.curator.framework.CuratorFrameworkFactory
-import org.apache.curator.retry.ExponentialBackoffRetry
 import org.apache.curator.test.TestingServer
 import org.apache.curator.x.discovery.ServiceDiscovery
 import org.apache.curator.x.discovery.ServiceDiscoveryBuilder
@@ -13,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient
 import org.springframework.cloud.client.loadbalancer.LoadBalanced
+import org.springframework.cloud.zookeeper.ZookeeperProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer
@@ -52,7 +52,7 @@ class ZookeeperRibbonISpec extends Specification {
 
 	@Configuration
 	@EnableAutoConfiguration
-	//@EnableDiscoveryClient
+	@EnableDiscoveryClient
 	static class Config {
 
 		@Bean
@@ -65,43 +65,23 @@ class ZookeeperRibbonISpec extends Specification {
 			return new TestingServer(SocketUtils.findAvailableTcpPort())
 		}
 
-		 /*@Bean(initMethod = "start", destroyMethod = "stop")
-		 TestServiceRegistrar testServiceRegistrar() {
-			 return new TestServiceRegistrar(wiremockServer().port(), curatorFramework())
-		 }*/
-
-		@Bean
-		ServiceInstance serviceInstance() {
-			return ServiceInstance.builder().uriSpec(new UriSpec("{scheme}://{address}:{port}/"))
-					.address('localhost')
-					.port(wiremockServer().port())
-					.name('testInstance')
-					.build()
-		}
+		 @Bean(initMethod = "start", destroyMethod = "stop")
+		 TestServiceRegistrar testServiceRegistrar(CuratorFramework curatorFramework) {
+			 return new TestServiceRegistrar(wiremockServer().port(), curatorFramework)
+		 }
 
 		@Bean(initMethod = "start", destroyMethod = "shutdown") WireMockServer wiremockServer() {
 			return new WireMockServer(SocketUtils.findAvailableTcpPort())
-		}
-
-		@Bean(initMethod = 'start', destroyMethod = 'close')
-		ServiceDiscovery serviceDiscovery() {
-			return ServiceDiscoveryBuilder
-					.builder(Void)
-					.basePath('/')
-					.client(curatorFramework())
-					.thisInstance(serviceInstance())
-					.build()
-		}
-
-		@Bean(initMethod = 'start', destroyMethod = 'close')
-		CuratorFramework curatorFramework() {
-			return CuratorFrameworkFactory.newClient(testingServer().connectString, new ExponentialBackoffRetry(20, 20, 500))
 		}
 
 		@Bean
 		TestRibbonClient testRibbonClient(@LoadBalanced RestTemplate restTemplate,
 										  @Value('${spring.application.name}') String springAppName) {
 			return new TestRibbonClient(restTemplate, springAppName)
+		}
+
+		@Bean ZookeeperProperties zookeeperProperties() {
+			return new ZookeeperProperties(connectString: "localhost:${testingServer().port}")
 		}
 
 	}
@@ -133,7 +113,7 @@ class ZookeeperRibbonISpec extends Specification {
 		ServiceDiscovery serviceDiscovery() {
 			return ServiceDiscoveryBuilder
 					.builder(Void)
-					.basePath('/')
+					.basePath('/services')
 					.client(curatorFramework)
 					.thisInstance(serviceInstance())
 					.build()
