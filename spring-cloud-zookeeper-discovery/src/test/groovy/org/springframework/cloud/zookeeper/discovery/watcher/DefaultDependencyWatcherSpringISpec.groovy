@@ -7,12 +7,10 @@ import org.apache.curator.x.discovery.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.SpringApplicationContextLoader
-import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependenciesAutoConfiguration
 import org.springframework.cloud.zookeeper.discovery.watcher.presence.DependencyPresenceOnStartupVerifier
 import org.springframework.cloud.zookeeper.discovery.watcher.presence.LogMissingDependencyChecker
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Import
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
@@ -45,7 +43,6 @@ class DefaultDependencyWatcherSpringISpec extends Specification {
 
 	@Configuration
 	@EnableAutoConfiguration
-	@Import([ZookeeperDependenciesAutoConfiguration, DependencyWatcherAutoConfiguration])
 	static class Config {
 
 		@Bean
