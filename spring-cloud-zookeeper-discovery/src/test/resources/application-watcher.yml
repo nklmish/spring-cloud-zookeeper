@@ -1,6 +1,7 @@
+spring.application.name: someName
 zookeeper:
   dependencies:
-    testInstance:
+    someAlias:
       id: someId
       path: testInstance
       loadBalancerType: ROUND_ROBIN

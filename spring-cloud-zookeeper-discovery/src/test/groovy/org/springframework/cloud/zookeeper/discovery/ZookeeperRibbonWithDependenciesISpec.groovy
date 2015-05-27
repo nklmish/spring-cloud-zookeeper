@@ -2,10 +2,8 @@ package org.springframework.cloud.zookeeper.discovery
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.SpringApplicationContextLoader
-import org.springframework.boot.test.WebIntegrationTest
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient
 import org.springframework.cloud.client.loadbalancer.LoadBalanced
 import org.springframework.context.annotation.Bean
@@ -16,10 +14,11 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.web.client.RestTemplate
 import spock.lang.Specification
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*
+
 @ContextConfiguration(classes = Config, loader = SpringApplicationContextLoader)
-@ActiveProfiles('ribbon')
-@WebIntegrationTest
-class ZookeeperRibbonISpec extends Specification {
+@ActiveProfiles('watcher')
+class ZookeeperRibbonWithDependenciesISpec extends Specification {
 
 	@Autowired TestRibbonClient testRibbonClient
 	@Autowired WireMockServer wiremockServer
@@ -30,14 +29,9 @@ class ZookeeperRibbonISpec extends Specification {
 		wireMock.register(get(urlEqualTo('/ping')).willReturn(aResponse().withBody('pong')))
 	}
 
-	def 'should find a collaborator via Ribbon'() {
+	def 'should find a collaborator via Ribbon by using its alias from dependencies'() {
 		expect:
-		'pong' == testRibbonClient.ping()
-	}
-
-	def 'should find the app by its name via Ribbon'() {
-		expect:
-		'{"status":"UP"}' == testRibbonClient.thisHealthCheck()
+			'pong' == testRibbonClient.ping()
 	}
 
 	@Configuration
@@ -47,9 +41,8 @@ class ZookeeperRibbonISpec extends Specification {
 	static class Config {
 
 		@Bean
-		TestRibbonClient testRibbonClient(@LoadBalanced RestTemplate restTemplate,
-										  @Value('${spring.application.name}') String springAppName) {
-			return new TestRibbonClient(restTemplate, springAppName)
+		TestRibbonClient testRibbonClient(@LoadBalanced RestTemplate restTemplate) {
+			return new TestRibbonClient(restTemplate)
 		}
 
 	}
@@ -57,22 +50,14 @@ class ZookeeperRibbonISpec extends Specification {
 	static class TestRibbonClient {
 
 		private final RestTemplate restTemplate;
-		private final String thisAppName
 
-		TestRibbonClient(RestTemplate restTemplate, String thisAppName) {
+		TestRibbonClient(RestTemplate restTemplate) {
 			this.restTemplate = restTemplate
-			this.thisAppName = thisAppName
 		}
 
 		String ping() {
-			return restTemplate.getForObject('http://testInstance/ping', String)
-		}
-
-		String thisHealthCheck() {
-			return restTemplate.getForObject("http://$thisAppName/health", String)
+			return restTemplate.getForObject('http://someAlias/ping', String)
 		}
 
 	}
 }
-
-import static com.github.tomakehurst.wiremock.client.WireMock.*
