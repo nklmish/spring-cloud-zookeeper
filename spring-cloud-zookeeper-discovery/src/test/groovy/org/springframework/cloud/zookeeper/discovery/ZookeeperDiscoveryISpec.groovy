@@ -55,6 +55,11 @@ class ZookeeperDiscoveryISpec extends Specification {
 			'pong' == testRibbonClient.pingOnUrl("${instance.host}:${instance.port}")
 	}
 
+	def 'should properly find local instance'() {
+		expect:
+			AddressProviderConfiguration.ipAddress == discoveryClient.localServiceInstance.host
+	}
+
 	@Configuration
 	@EnableAutoConfiguration
 	@Import(CommonTestConfig)
