@@ -11,23 +11,23 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.boot.test.WebIntegrationTest
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient
 import org.springframework.cloud.client.loadbalancer.LoadBalanced
 import org.springframework.cloud.zookeeper.ZookeeperProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.util.SocketUtils
 import org.springframework.web.client.RestTemplate
-import spock.lang.Ignore
 import spock.lang.Specification
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*
 
 @ContextConfiguration(classes = Config, loader = SpringApplicationContextLoader)
 @ActiveProfiles('ribbon')
+@WebIntegrationTest("server.port=8080")
 class ZookeeperRibbonISpec extends Specification {
 
 	@Autowired TestRibbonClient testRibbonClient
@@ -44,21 +44,15 @@ class ZookeeperRibbonISpec extends Specification {
 			'pong' == testRibbonClient.ping()
 	}
 
-	@Ignore
 	def 'should find the app by its name via Ribbon'() {
 		expect:
-			'OK' == testRibbonClient.thisHealthCheck()
+			'{"status":"UP"}' == testRibbonClient.thisHealthCheck()
 	}
 
 	@Configuration
 	@EnableAutoConfiguration
 	@EnableDiscoveryClient
 	static class Config {
-
-		@Bean
-		static PropertySourcesPlaceholderConfigurer propertiesConfigurer() {
-			return new PropertySourcesPlaceholderConfigurer()
-		}
 
 		@Bean(destroyMethod = 'close')
 		TestingServer testingServer() {

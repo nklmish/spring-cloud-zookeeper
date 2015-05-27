@@ -15,9 +15,4 @@ public class ZookeeperDiscoveryProperties {
 	private String root = "/services";
 
 	private String uriSpec = "{scheme}://{address}:{port}";
-
-	/**
-	 * @param realm allows you to register a service under specified realm
-	 */
-	private String realm;
 }
