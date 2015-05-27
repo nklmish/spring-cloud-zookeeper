@@ -16,23 +16,26 @@
 
 package org.springframework.cloud.zookeeper.discovery;
 
-import static com.netflix.client.config.CommonClientConfigKey.DeploymentContextBasedVipAddresses;
-import static com.netflix.client.config.CommonClientConfigKey.EnableZoneAffinity;
-
-import javax.annotation.PostConstruct;
-
-import org.apache.curator.x.discovery.ServiceDiscovery;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import com.netflix.client.config.IClientConfig;
 import com.netflix.config.ConfigurationManager;
 import com.netflix.config.DynamicPropertyFactory;
 import com.netflix.config.DynamicStringProperty;
 import com.netflix.loadbalancer.ServerList;
+import org.apache.curator.x.discovery.ServiceDiscovery;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cloud.zookeeper.discovery.dependency.DependenciesPassedCondition;
+import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependencies;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
+import org.springframework.context.annotation.Configuration;
+
+import javax.annotation.PostConstruct;
+
+import static com.netflix.client.config.CommonClientConfigKey.DeploymentContextBasedVipAddresses;
+import static com.netflix.client.config.CommonClientConfigKey.EnableZoneAffinity;
 
 /**
  * Preprocessor that configures defaults for eureka-discovered ribbon clients. Such as:
@@ -52,6 +55,16 @@ public class ZookeeperRibbonClientConfiguration {
 	private String serviceId = "client";
 
 	public ZookeeperRibbonClientConfiguration() {
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	@Conditional(DependenciesPassedCondition.class)
+	@ConditionalOnProperty(value = "zookeeper.dependencies.enabled", matchIfMissing = true)
+	public ServerList<?> ribbonServerListFromDependencies(IClientConfig config, ZookeeperDependencies zookeeperDependencies) {
+		ZookeeperServerList serverList = new ZookeeperServerList(serviceDiscovery);
+		serverList.initFromDependencies(config, zookeeperDependencies);
+		return serverList;
 	}
 
 	@Bean

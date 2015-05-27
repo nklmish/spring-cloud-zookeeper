@@ -2,8 +2,8 @@ package org.springframework.cloud.zookeeper.discovery.watcher;
 
 import org.apache.curator.x.discovery.ServiceCache;
 import org.apache.curator.x.discovery.ServiceDiscovery;
-import org.springframework.cloud.zookeeper.discovery.watcher.dependency.ZookeeperDependencies;
-import org.springframework.cloud.zookeeper.discovery.watcher.dependency.ZookeeperDependencies.ZookeeperDependency;
+import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependencies;
+import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependencies.ZookeeperDependency;
 import org.springframework.cloud.zookeeper.discovery.watcher.presence.DependencyPresenceOnStartupVerifier;
 
 import java.io.IOException;

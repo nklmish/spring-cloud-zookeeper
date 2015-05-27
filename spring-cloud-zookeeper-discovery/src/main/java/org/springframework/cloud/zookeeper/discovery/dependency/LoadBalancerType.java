@@ -1,4 +1,4 @@
-package org.springframework.cloud.zookeeper.discovery.watcher.dependency;
+package org.springframework.cloud.zookeeper.discovery.dependency;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;

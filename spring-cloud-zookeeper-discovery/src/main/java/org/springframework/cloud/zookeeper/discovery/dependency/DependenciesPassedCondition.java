@@ -1,4 +1,4 @@
-package org.springframework.cloud.zookeeper.discovery.watcher;
+package org.springframework.cloud.zookeeper.discovery.dependency;
 
 import org.springframework.boot.autoconfigure.condition.ConditionOutcome;
 import org.springframework.boot.autoconfigure.condition.SpringBootCondition;
@@ -8,7 +8,7 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
 
 import java.util.Map;
 
-class DependenciesPassedCondition extends SpringBootCondition {
+public class DependenciesPassedCondition extends SpringBootCondition {
 
 	private static final String ZOOKEEPER_DEPENDENCIES_PROP = "zookeeper.dependencies";
 

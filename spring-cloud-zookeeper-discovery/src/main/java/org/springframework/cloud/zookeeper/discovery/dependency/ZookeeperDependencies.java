@@ -1,10 +1,9 @@
-package org.springframework.cloud.zookeeper.discovery.watcher.dependency;
+package org.springframework.cloud.zookeeper.discovery.dependency;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
@@ -12,7 +11,6 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-@Component
 @Data
 @ConfigurationProperties("zookeeper")
 public class ZookeeperDependencies {
@@ -57,5 +55,14 @@ public class ZookeeperDependencies {
 
 	public boolean hasDependencies() {
 		return !dependencies.isEmpty();
+	}
+
+	public String getPathForAlias(final String alias) {
+		for (Map.Entry<String, ZookeeperDependency> zookeeperDependencyEntry : dependencies.entrySet()) {
+			if (zookeeperDependencyEntry.getKey().equals(alias)) {
+				return zookeeperDependencyEntry.getValue().getPath();
+			}
+		}
+		return "";
 	}
 }

@@ -1,5 +1,4 @@
 package org.springframework.cloud.zookeeper.discovery.watcher
-
 import org.apache.curator.framework.CuratorFramework
 import org.apache.curator.framework.CuratorFrameworkFactory
 import org.apache.curator.retry.ExponentialBackoffRetry
@@ -7,12 +6,11 @@ import org.apache.curator.test.TestingServer
 import org.apache.curator.x.discovery.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
-import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependenciesAutoConfiguration
 import org.springframework.cloud.zookeeper.discovery.watcher.presence.DependencyPresenceOnStartupVerifier
 import org.springframework.cloud.zookeeper.discovery.watcher.presence.LogMissingDependencyChecker
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer
@@ -26,34 +24,28 @@ import spock.util.concurrent.PollingConditions
 @ActiveProfiles('watcher')
 class DefaultDependencyWatcherSpringISpec extends Specification {
 
-	@Autowired
-	AssertableDependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier
-	@Autowired
-	AssertableDependencyWatcherListener dependencyWatcherListener
-	@Autowired
-	ServiceDiscovery serviceDiscovery
-	@Autowired
-	ServiceInstance serviceInstance
+	@Autowired AssertableDependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier
+	@Autowired AssertableDependencyWatcherListener dependencyWatcherListener
+	@Autowired ServiceDiscovery serviceDiscovery
+	@Autowired ServiceInstance serviceInstance
 
 	def 'should verify that presence of a dependency has been checked'() {
 		expect:
-		dependencyPresenceOnStartupVerifier.startupPresenceVerified
+			dependencyPresenceOnStartupVerifier.startupPresenceVerified
 	}
 
 	def 'should verify that dependency watcher listener is successfully registered and operational'() {
 		when:
-		serviceDiscovery.unregisterService(serviceInstance)
+			serviceDiscovery.unregisterService(serviceInstance)
 		then:
-		new PollingConditions().eventually {
-			dependencyWatcherListener.dependencyState == DependencyState.DISCONNECTED
-		}
+			new PollingConditions().eventually {
+				dependencyWatcherListener.dependencyState == DependencyState.DISCONNECTED
+			}
 	}
 
 	@Configuration
 	@EnableAutoConfiguration
-	@EnableConfigurationProperties
-	@Import(DependencyWatcherAutoConfiguration)
-	@ComponentScan('org.springframework.cloud.zookeeper.discovery.watcher.dependency')
+	@Import([ZookeeperDependenciesAutoConfiguration, DependencyWatcherAutoConfiguration])
 	static class Config {
 
 		@Bean

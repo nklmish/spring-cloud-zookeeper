@@ -4,9 +4,11 @@ import org.apache.curator.x.discovery.ServiceDiscovery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryClientConfiguration;
-import org.springframework.cloud.zookeeper.discovery.watcher.dependency.ZookeeperDependencies;
+import org.springframework.cloud.zookeeper.discovery.dependency.DependenciesPassedCondition;
+import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependencies;
+import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependenciesAutoConfiguration;
 import org.springframework.cloud.zookeeper.discovery.watcher.presence.DefaultDependencyPresenceOnStartupVerifier;
 import org.springframework.cloud.zookeeper.discovery.watcher.presence.DependencyPresenceOnStartupVerifier;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +27,8 @@ import java.util.List;
 @Configuration
 @EnableConfigurationProperties
 @Conditional(DependenciesPassedCondition.class)
-@AutoConfigureAfter(ZookeeperDiscoveryClientConfiguration.class)
+@ConditionalOnProperty(value = "zookeeper.dependencies.enabled", matchIfMissing = true)
+@AutoConfigureAfter(ZookeeperDependenciesAutoConfiguration.class)
 public class DependencyWatcherAutoConfiguration {
 
 	@Autowired(required = false)
