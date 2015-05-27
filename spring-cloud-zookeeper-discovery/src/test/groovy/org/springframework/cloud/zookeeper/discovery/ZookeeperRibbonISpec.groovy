@@ -27,7 +27,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*
 
 @ContextConfiguration(classes = Config, loader = SpringApplicationContextLoader)
 @ActiveProfiles('ribbon')
-@WebIntegrationTest("server.port=8080")
+@WebIntegrationTest
 class ZookeeperRibbonISpec extends Specification {
 
 	@Autowired TestRibbonClient testRibbonClient
