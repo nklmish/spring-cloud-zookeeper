@@ -38,6 +38,8 @@ import java.util.List;
  * Needs custom dependencies to be set in order to work.
  *
  * @see ZookeeperDependencies
+ *
+ * @author Marcin Grzejszczak, 4financeIT
  */
 @Configuration
 @EnableConfigurationProperties

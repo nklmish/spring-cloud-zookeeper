@@ -26,9 +26,7 @@ import java.util.List;
 
 /**
  * @author Marcin Grzejszczak, 4financeIT
- * @author Adam Chudzik, 4financeIT
- * @author Tomasz Szymanski, 4financeIT
- * @author Tomasz Dziurko, 4financeIT
+ * @author Tomasz Nurkiewicz, 4financeIT
  */
 public class DependencyStateChangeListenerRegistry implements ServiceCacheListener {
 
