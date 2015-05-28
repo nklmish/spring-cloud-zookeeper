@@ -18,6 +18,8 @@ package org.springframework.cloud.zookeeper.discovery.watcher;
 /**
  * Performs logic upon change of state of a dependency {@see DependencyState}
  * in the service discovery system.
+ *
+ * @author <a href="http://www.4financeit.com>4financeIT</a>
  */
 public interface DependencyWatcherListener {
 

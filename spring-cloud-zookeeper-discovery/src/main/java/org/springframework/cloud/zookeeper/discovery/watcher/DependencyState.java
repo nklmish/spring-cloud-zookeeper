@@ -15,6 +15,9 @@
  */
 package org.springframework.cloud.zookeeper.discovery.watcher;
 
+/**
+ * @author <a href="http://www.4financeit.com>4financeIT</a>
+ */
 public enum DependencyState {
 	CONNECTED,
 	DISCONNECTED

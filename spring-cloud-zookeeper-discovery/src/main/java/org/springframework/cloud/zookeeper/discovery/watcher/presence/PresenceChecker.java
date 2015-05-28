@@ -19,6 +19,9 @@ import org.apache.curator.x.discovery.ServiceInstance;
 
 import java.util.List;
 
+/**
+ * @author <a href="http://www.4financeit.com>4financeIT</a>
+ */
 public interface PresenceChecker {
 
 	/**

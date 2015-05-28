@@ -30,6 +30,9 @@ import java.util.Enumeration;
  * Configuration that registers a bean related to microservice's address and port providing.
  *
  * @see MicroserviceAddressProvider
+ *
+ * @author Marcin Grzejszczak, 4financeIT
+ * @author Tomasz Dziurko, 4financeIT
  */
 @Configuration
 public class AddressProviderConfiguration {

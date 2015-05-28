@@ -17,6 +17,10 @@ package org.springframework.cloud.zookeeper.discovery.watcher.presence;
 
 import org.apache.curator.x.discovery.ServiceCache;
 
+/**
+ * @author Marcin Grzejszczak, 4financeIT
+ * @author Tomasz Szymanski, 4financeIT
+ */
 @SuppressWarnings("unchecked")
 public abstract class DependencyPresenceOnStartupVerifier {
 	private static final PresenceChecker MANDATORY_DEPENDENCY_CHECKER = new FailOnMissingDependencyChecker();

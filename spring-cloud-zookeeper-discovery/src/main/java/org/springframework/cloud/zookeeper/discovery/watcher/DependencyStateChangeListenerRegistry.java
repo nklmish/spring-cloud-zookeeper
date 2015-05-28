@@ -24,6 +24,12 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+/**
+ * @author Marcin Grzejszczak, 4financeIT
+ * @author Adam Chudzik, 4financeIT
+ * @author Tomasz Szymanski, 4financeIT
+ * @author Tomasz Dziurko, 4financeIT
+ */
 public class DependencyStateChangeListenerRegistry implements ServiceCacheListener {
 
 	private static final Logger log = LoggerFactory.getLogger(DependencyStateChangeListenerRegistry.class);

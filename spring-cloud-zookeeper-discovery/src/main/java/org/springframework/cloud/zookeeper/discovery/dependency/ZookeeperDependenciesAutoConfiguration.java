@@ -28,6 +28,9 @@ import org.springframework.context.annotation.Configuration;
  * Provides autoconfiguration for Zookeeper dependency set up in properties.
  *
  * @see ZookeeperDependencies
+ *
+ * @author Marcin Grzejszczak, 4financeIT
+ *
  */
 @Configuration
 @EnableConfigurationProperties

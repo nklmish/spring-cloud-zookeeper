@@ -22,6 +22,10 @@ import org.slf4j.LoggerFactory;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
+/**
+ * @author Marcin Grzejszczak, 4financeIT
+ * @author Tomasz Dziurko, 4financeIT
+ */
 public class LogMissingDependencyChecker implements PresenceChecker {
 
 	private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

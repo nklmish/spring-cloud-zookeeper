@@ -21,6 +21,10 @@ import org.springframework.cloud.zookeeper.discovery.watcher.presence.PresenceCh
 
 import java.util.List;
 
+/**
+ * @author Marcin Grzejszczak, 4financeIT
+ * @author Adam Chudzik, 4financeIT
+ */
 public class FailOnMissingDependencyChecker implements PresenceChecker {
 	@Override
 	public void checkPresence(String dependencyName, List<ServiceInstance> serviceInstances) {

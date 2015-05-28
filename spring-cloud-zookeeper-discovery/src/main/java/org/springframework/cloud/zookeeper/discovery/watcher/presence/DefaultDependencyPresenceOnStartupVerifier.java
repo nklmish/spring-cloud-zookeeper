@@ -15,6 +15,9 @@
  */
 package org.springframework.cloud.zookeeper.discovery.watcher.presence;
 
+/**
+ * @author <a href="http://www.4financeit.com>4financeIT</a>
+ */
 public class DefaultDependencyPresenceOnStartupVerifier extends DependencyPresenceOnStartupVerifier {
 	public DefaultDependencyPresenceOnStartupVerifier() {
 		super(new LogMissingDependencyChecker());

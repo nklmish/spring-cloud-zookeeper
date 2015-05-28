@@ -23,7 +23,9 @@ import java.util.Arrays;
 import static org.apache.commons.lang.StringUtils.EMPTY;
 import static org.apache.commons.lang.StringUtils.defaultIfEmpty;
 
-
+/**
+ * @author Marcin Grzejszczak, 4financeIT
+ */
 public enum LoadBalancerType {
 	STICKY, RANDOM, ROUND_ROBIN;
 

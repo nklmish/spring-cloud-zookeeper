@@ -23,6 +23,9 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
 
 import java.util.Map;
 
+/**
+ * @author Marcin Grzejszczak, 4financeIT
+ */
 public class DependenciesPassedCondition extends SpringBootCondition {
 
 	private static final String ZOOKEEPER_DEPENDENCIES_PROP = "zookeeper.dependencies";

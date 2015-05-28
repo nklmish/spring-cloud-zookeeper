@@ -44,6 +44,7 @@ import static com.netflix.client.config.CommonClientConfigKey.EnableZoneAffinity
  *
  * @author Spencer Gibb
  * @author Dave Syer
+ * @author Marcin Grzejszczak, 4financeIT
  */
 @Configuration
 public class ZookeeperRibbonClientConfiguration {

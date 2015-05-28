@@ -17,6 +17,7 @@ import static org.springframework.util.ReflectionUtils.rethrowRuntimeException;
 
 /**
  * @author Spencer Gibb
+ * @author Marcin Grzejszczak, 4financeIT
  */
 public class ZookeeperDiscoveryClient implements DiscoveryClient {
 

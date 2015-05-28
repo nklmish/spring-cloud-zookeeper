@@ -26,6 +26,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Marcin Grzejszczak, 4financeIT
+ * @author Michal Chmielarz, 4financeIT
+ */
 public class DefaultDependencyWatcher implements DependencyRegistrationHookProvider {
 
 	private final ServiceDiscovery serviceDiscovery;

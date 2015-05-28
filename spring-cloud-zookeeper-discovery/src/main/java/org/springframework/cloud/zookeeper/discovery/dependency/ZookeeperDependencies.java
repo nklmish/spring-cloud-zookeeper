@@ -26,6 +26,9 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * @author Marcin Grzejszczak, 4financeIT
+ */
 @Data
 @ConfigurationProperties("zookeeper")
 public class ZookeeperDependencies {

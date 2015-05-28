@@ -17,6 +17,10 @@ package org.springframework.cloud.zookeeper.discovery;
 
 /**
  * Holder for microservice's host and port
+ *
+ * @author Marcin Grzejszczak, 4financeIT
+ * @author Adam Chudzik, 4financeIT
+ *
  */
 public class MicroserviceAddressProvider {
 	private final String host;

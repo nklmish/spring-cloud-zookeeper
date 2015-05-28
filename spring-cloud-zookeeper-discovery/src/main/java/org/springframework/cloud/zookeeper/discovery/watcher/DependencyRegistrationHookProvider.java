@@ -17,6 +17,9 @@ package org.springframework.cloud.zookeeper.discovery.watcher;
 
 import java.io.IOException;
 
+/**
+ * @author <a href="http://www.4financeit.com>4financeIT</a>
+ */
 public interface DependencyRegistrationHookProvider {
 
 	/**
