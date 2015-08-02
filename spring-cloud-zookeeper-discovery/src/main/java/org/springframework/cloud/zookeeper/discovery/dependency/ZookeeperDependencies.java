@@ -15,6 +15,8 @@
  */
 package org.springframework.cloud.zookeeper.discovery.dependency;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterators;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,6 +30,7 @@ import java.util.Map;
 
 /**
  * @author Marcin Grzejszczak, 4financeIT
+ * @author Nakul Mishra, 4financeIT
  */
 @Data
 @ConfigurationProperties("zookeeper")
@@ -82,6 +85,16 @@ public class ZookeeperDependencies {
 			}
 		}
 		return null;
+	}
+
+	public ZookeeperDependency getDependencyForPath(final String path) {
+		Map.Entry<String, ZookeeperDependency> dependency = Iterators.find(dependencies.entrySet().iterator(), new Predicate<Map.Entry<String, ZookeeperDependency>>() {
+			@Override
+			public boolean apply(Map.Entry<String, ZookeeperDependency> zookeeperDependencyEntry) {
+				return zookeeperDependencyEntry.getKey().equals(path);
+			}
+		});
+		return dependency != null ? dependency.getValue() : null;
 	}
 
 	public String getPathForAlias(final String alias) {

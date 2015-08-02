@@ -20,12 +20,14 @@ import com.netflix.client.config.IClientConfig;
 import com.netflix.config.ConfigurationManager;
 import com.netflix.config.DynamicPropertyFactory;
 import com.netflix.config.DynamicStringProperty;
+import com.netflix.loadbalancer.ILoadBalancer;
 import com.netflix.loadbalancer.ServerList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.zookeeper.discovery.dependency.DependenciesPassedCondition;
+import org.springframework.cloud.zookeeper.discovery.dependency.DependencyAwareLoadBalancer;
 import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependencies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
@@ -44,9 +46,11 @@ import static com.netflix.client.config.CommonClientConfigKey.EnableZoneAffinity
  * @author Spencer Gibb
  * @author Dave Syer
  * @author Marcin Grzejszczak, 4financeIT
+ * @author Nakul Mishra, 4financeIT
  */
 @Configuration
 public class ZookeeperRibbonClientConfiguration {
+
 	protected static final String VALUE_NOT_SET = "__not__set__";
 	protected static final String DEFAULT_NAMESPACE = "ribbon";
 
@@ -67,6 +71,14 @@ public class ZookeeperRibbonClientConfiguration {
 		ZookeeperServerList serverList = new ZookeeperServerList(serviceDiscovery.getServiceDiscovery());
 		serverList.initFromDependencies(config, zookeeperDependencies);
 		return serverList;
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	@Conditional(DependenciesPassedCondition.class)
+	@ConditionalOnProperty(value = "zookeeper.dependencies.enabled", matchIfMissing = true)
+	public ILoadBalancer createLoadBalancer(final ZookeeperDependencies zookeeperDependencies) {
+		return new DependencyAwareLoadBalancer(zookeeperDependencies, serviceDiscovery.getServiceDiscovery());
 	}
 
 	@Bean
